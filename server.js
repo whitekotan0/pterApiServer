@@ -72,6 +72,6 @@ ${code}
   }
 });
 
-app.listen(port,"0,0,0,0", () => {
+app.listen(port,"0.0.0.0", () => {
   console.log(`[AI Server] Сервер запущен на http://localhost:${port}`);
 });
