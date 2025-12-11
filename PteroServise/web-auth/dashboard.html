@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MineAI — Особистий кабінет</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Libre+Franklin:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <div class="page-container dashboard-page">
+    <!-- Декоративний фон -->
+    <div class="bg-pattern"></div>
+    <div class="bg-gradient"></div>
+    
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <a href="index.html" class="logo-link">
+          <div class="logo-small">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M24 4L4 14v20l20 10 20-10V14L24 4z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+              <path d="M24 24L4 14m20 10v20m0-20l20-10" stroke="currentColor" stroke-width="1.5"/>
+              <circle cx="24" cy="24" r="6" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <span class="logo-text">MineAI</span>
+        </a>
+        
+        <nav class="header-nav">
+          <a href="#" class="nav-link active">Кабінет</a>
+          <a href="#" class="nav-link">Документація</a>
+          <button class="btn-logout" id="logout-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+              <polyline points="16,17 21,12 16,7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            <span>Вийти</span>
+          </button>
+        </nav>
+      </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="dashboard-content">
+      <div class="container">
+        <!-- Welcome Section -->
+        <section class="welcome-section">
+          <div class="user-avatar" id="user-avatar">
+            <span id="avatar-letter">U</span>
+          </div>
+          <div class="welcome-text">
+            <h1>Вітаємо, <span id="user-name">Користувач</span>!</h1>
+            <p class="user-email" id="user-email">email@example.com</p>
+          </div>
+        </section>
+        
+        <!-- Stats Cards -->
+        <section class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon tokens">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 6v12M6 12h12"/>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-value" id="tokens-remaining">—</span>
+              <span class="stat-label">Токенів залишилось</span>
+            </div>
+            <div class="stat-progress">
+              <div class="progress-bar" id="tokens-progress" style="width: 0%"></div>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon requests">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-value" id="requests-remaining">—</span>
+              <span class="stat-label">Запитів залишилось</span>
+            </div>
+            <div class="stat-progress">
+              <div class="progress-bar" id="requests-progress" style="width: 0%"></div>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon plan">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-value plan-badge" id="user-plan">FREE</span>
+              <span class="stat-label">Поточний план</span>
+            </div>
+          </div>
+        </section>
+        
+        <!-- Token Section -->
+        <section class="token-section">
+          <div class="section-header">
+            <h2>Ваш Access Token</h2>
+            <p>Використовуйте цей токен у Desktop додатку MineAI</p>
+          </div>
+          
+          <div class="token-display">
+            <div class="token-value" id="access-token">Завантаження...</div>
+            <div class="token-actions">
+              <button class="btn-icon" id="copy-token-btn" title="Копіювати">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2"/>
+                  <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+                </svg>
+              </button>
+              <button class="btn-icon" id="refresh-token-btn" title="Оновити токен">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M23 4v6h-6M1 20v-6h6"/>
+                  <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          
+          <div class="token-info">
+            <span class="info-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12,6 12,12 16,14"/>
+              </svg>
+              Дійсний: <span id="token-expires">—</span>
+            </span>
+          </div>
+        </section>
+        
+        <!-- Sessions Section -->
+        <section class="sessions-section">
+          <div class="section-header">
+            <h2>Активні сесії</h2>
+            <button class="btn-text" id="logout-all-btn">Вийти з усіх пристроїв</button>
+          </div>
+          
+          <div class="sessions-list" id="sessions-list">
+            <div class="session-item current">
+              <div class="session-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <rect x="2" y="3" width="20" height="14" rx="2"/>
+                  <path d="M8 21h8M12 17v4"/>
+                </svg>
+              </div>
+              <div class="session-info">
+                <span class="session-device">Поточний пристрій</span>
+                <span class="session-date">Завантаження...</span>
+              </div>
+              <span class="session-badge">Поточна</span>
+            </div>
+          </div>
+        </section>
+        
+        <!-- Upgrade Section -->
+        <section class="upgrade-section">
+          <div class="upgrade-content">
+            <div class="upgrade-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+              </svg>
+            </div>
+            <div class="upgrade-text">
+              <h3>Потрібно більше токенів?</h3>
+              <p>Оберіть план, що підходить вам найкраще</p>
+            </div>
+            <button class="btn btn-upgrade" disabled>
+              <span>Незабаром</span>
+            </button>
+          </div>
+        </section>
+      </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+      <p>© 2024 MineAI. Всі права захищено.</p>
+    </footer>
+  </div>
+  
+  <!-- Loading -->
+  <div id="loading" class="loading hidden">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="config.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>
+
