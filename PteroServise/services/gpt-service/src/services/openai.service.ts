@@ -1,10 +1,11 @@
 import OpenAI from 'openai';
-import dotenv from 'dotenv';
+import * as dotenv from 'dotenv';
 
 dotenv.config();
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
+  timeout: 60000, // 60 секунд timeout на рівні клієнта
 });
 
 export interface ProcessMermaidRequest {
@@ -82,7 +83,6 @@ export const processMermaidWithGPT = async (
         ],
         temperature: 0.7,
         max_tokens: 2000,
-        timeout: 60000, // 60 секунд timeout
       });
     });
 
@@ -120,4 +120,3 @@ export const processMermaidWithGPT = async (
     throw new Error(`Failed to process Mermaid diagram: ${error.message || 'Unknown error'}`);
   }
 };
-

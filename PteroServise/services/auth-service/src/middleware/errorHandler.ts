@@ -1,13 +1,23 @@
 import { Request, Response, NextFunction } from 'express';
 
-interface AppError extends Error {
-  statusCode?: number;
-  code?: string;
-  isOperational?: boolean;
+// Клас для створення операційних помилок
+export class AppError extends Error {
+  public statusCode: number;
+  public code: string;
+  public isOperational: boolean;
+
+  constructor(message: string, statusCode: number = 500, code: string = 'ERROR') {
+    super(message);
+    this.statusCode = statusCode;
+    this.code = code;
+    this.isOperational = true;
+
+    Error.captureStackTrace(this, this.constructor);
+  }
 }
 
 export const errorHandler = (
-  err: AppError,
+  err: AppError | Error,
   req: Request,
   res: Response,
   next: NextFunction
@@ -23,8 +33,8 @@ export const errorHandler = (
   });
 
   // Визначаємо статус код
-  const statusCode = err.statusCode || 500;
-  const code = err.code || 'INTERNAL_ERROR';
+  const statusCode = err instanceof AppError ? err.statusCode : 500;
+  const code = err instanceof AppError ? err.code : 'INTERNAL_ERROR';
 
   // Формуємо відповідь
   const response: {
@@ -58,22 +68,6 @@ export const asyncHandler = (fn: Function) => {
     Promise.resolve(fn(req, res, next)).catch(next);
   };
 };
-
-// Клас для створення операційних помилок
-export class AppError extends Error {
-  public statusCode: number;
-  public code: string;
-  public isOperational: boolean;
-
-  constructor(message: string, statusCode: number = 500, code: string = 'ERROR') {
-    super(message);
-    this.statusCode = statusCode;
-    this.code = code;
-    this.isOperational = true;
-
-    Error.captureStackTrace(this, this.constructor);
-  }
-}
 
 // Помилки автентифікації
 export class AuthenticationError extends AppError {

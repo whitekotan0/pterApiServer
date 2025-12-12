@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
+import * as dotenv from 'dotenv';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { gptRouter } from './routes/gpt.routes';
@@ -88,4 +88,3 @@ process.on('SIGINT', () => {
     process.exit(0);
   });
 });
-

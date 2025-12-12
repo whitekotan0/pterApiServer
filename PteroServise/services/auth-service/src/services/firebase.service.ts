@@ -1,5 +1,5 @@
-import admin from 'firebase-admin';
-import dotenv from 'dotenv';
+import * as admin from 'firebase-admin';
+import * as dotenv from 'dotenv';
 
 dotenv.config();
 
@@ -34,4 +34,3 @@ export const getUserById = async (uid: string) => {
     throw new Error('User not found');
   }
 };
-
