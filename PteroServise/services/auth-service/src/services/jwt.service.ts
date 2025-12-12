@@ -1,6 +1,6 @@
-import * as jwt from 'jsonwebtoken';
-import * as crypto from 'crypto';
-import * as dotenv from 'dotenv';
+import jwt, { SignOptions } from 'jsonwebtoken';
+import crypto from 'crypto';
+import dotenv from 'dotenv';
 
 dotenv.config();
 
@@ -75,24 +75,28 @@ export const generateTokenPair = (payload: Omit<JWTPayload, 'jti' | 'type'>, dev
   const accessJti = generateJti();
   const refreshJti = generateJti();
   
+  const accessOptions: SignOptions = {
+    expiresIn: JWT_EXPIRES_IN,
+    issuer: JWT_ISSUER,
+    audience: JWT_AUDIENCE,
+  };
+  
+  const refreshOptions: SignOptions = {
+    expiresIn: JWT_REFRESH_EXPIRES_IN,
+    issuer: JWT_ISSUER,
+    audience: JWT_AUDIENCE,
+  };
+  
   const accessToken = jwt.sign(
     { ...payload, jti: accessJti, type: 'access' },
     JWT_SECRET!,
-    {
-      expiresIn: JWT_EXPIRES_IN,
-      issuer: JWT_ISSUER,
-      audience: JWT_AUDIENCE,
-    }
+    accessOptions
   );
   
   const refreshToken = jwt.sign(
     { ...payload, jti: refreshJti, type: 'refresh' },
     JWT_REFRESH_SECRET,
-    {
-      expiresIn: JWT_REFRESH_EXPIRES_IN,
-      issuer: JWT_ISSUER,
-      audience: JWT_AUDIENCE,
-    }
+    refreshOptions
   );
   
   // Зберігаємо refresh token
@@ -117,14 +121,16 @@ export const generateTokenPair = (payload: Omit<JWTPayload, 'jti' | 'type'>, dev
 export const generateJWT = (payload: Omit<JWTPayload, 'jti' | 'type'>): string => {
   const jti = generateJti();
   
+  const options: SignOptions = {
+    expiresIn: JWT_EXPIRES_IN,
+    issuer: JWT_ISSUER,
+    audience: JWT_AUDIENCE,
+  };
+  
   return jwt.sign(
     { ...payload, jti, type: 'access' },
     JWT_SECRET!,
-    {
-      expiresIn: JWT_EXPIRES_IN,
-      issuer: JWT_ISSUER,
-      audience: JWT_AUDIENCE,
-    }
+    options
   );
 };
 
