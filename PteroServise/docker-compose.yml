@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Фронтенд (статичний сайт)
   web-auth:
