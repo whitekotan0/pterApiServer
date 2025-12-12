@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { authRouter } from './routes/auth.routes';
 import { errorHandler } from './middleware/errorHandler';
+import { isFirebaseInitialized } from './services/firebase.service';
 
 dotenv.config();
 
@@ -49,13 +50,21 @@ app.use('/api/auth', authLimiter, authRouter);
 // Health check з перевіркою залежностей
 app.get('/health', async (req, res) => {
   try {
-    // Перевірка Firebase (якщо можливо)
+    const firebaseOk = isFirebaseInitialized();
     const health = {
-      status: 'ok',
+      status: firebaseOk ? 'ok' : 'degraded',
       service: 'auth-service',
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
+      dependencies: {
+        firebase: firebaseOk ? 'connected' : 'NOT CONFIGURED - check .env file!',
+      },
     };
+    
+    if (!firebaseOk) {
+      console.warn('⚠️  Health check: Firebase not initialized');
+    }
+    
     res.json(health);
   } catch (error) {
     res.status(503).json({
