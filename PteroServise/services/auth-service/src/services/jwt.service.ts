@@ -1,4 +1,4 @@
-import jwt, { SignOptions } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import dotenv from 'dotenv';
 
@@ -75,62 +75,60 @@ export const generateTokenPair = (payload: Omit<JWTPayload, 'jti' | 'type'>, dev
   const accessJti = generateJti();
   const refreshJti = generateJti();
   
-  const accessOptions: SignOptions = {
-    expiresIn: JWT_EXPIRES_IN,
-    issuer: JWT_ISSUER,
-    audience: JWT_AUDIENCE,
-  };
-  
-  const refreshOptions: SignOptions = {
-    expiresIn: JWT_REFRESH_EXPIRES_IN,
-    issuer: JWT_ISSUER,
-    audience: JWT_AUDIENCE,
-  };
+  // Конвертуємо в секунди для уникнення проблем з типами
+  const accessExpiresInSeconds = parseExpiresIn(JWT_EXPIRES_IN);
+  const refreshExpiresInSeconds = parseExpiresIn(JWT_REFRESH_EXPIRES_IN);
   
   const accessToken = jwt.sign(
     { ...payload, jti: accessJti, type: 'access' },
     JWT_SECRET!,
-    accessOptions
+    {
+      expiresIn: accessExpiresInSeconds,
+      issuer: JWT_ISSUER,
+      audience: JWT_AUDIENCE,
+    }
   );
   
   const refreshToken = jwt.sign(
     { ...payload, jti: refreshJti, type: 'refresh' },
     JWT_REFRESH_SECRET,
-    refreshOptions
+    {
+      expiresIn: refreshExpiresInSeconds,
+      issuer: JWT_ISSUER,
+      audience: JWT_AUDIENCE,
+    }
   );
   
   // Зберігаємо refresh token
-  const refreshExpiresIn = parseExpiresIn(JWT_REFRESH_EXPIRES_IN);
   refreshTokenStore.set(refreshJti, {
     userId: payload.userId,
     jti: refreshJti,
     createdAt: new Date(),
-    expiresAt: new Date(Date.now() + refreshExpiresIn * 1000),
+    expiresAt: new Date(Date.now() + refreshExpiresInSeconds * 1000),
     deviceInfo,
   });
   
   return {
     accessToken,
     refreshToken,
-    expiresIn: parseExpiresIn(JWT_EXPIRES_IN),
-    refreshExpiresIn,
+    expiresIn: accessExpiresInSeconds,
+    refreshExpiresIn: refreshExpiresInSeconds,
   };
 };
 
 // Генерація тільки access token (для зворотної сумісності)
 export const generateJWT = (payload: Omit<JWTPayload, 'jti' | 'type'>): string => {
   const jti = generateJti();
-  
-  const options: SignOptions = {
-    expiresIn: JWT_EXPIRES_IN,
-    issuer: JWT_ISSUER,
-    audience: JWT_AUDIENCE,
-  };
+  const expiresInSeconds = parseExpiresIn(JWT_EXPIRES_IN);
   
   return jwt.sign(
     { ...payload, jti, type: 'access' },
     JWT_SECRET!,
-    options
+    {
+      expiresIn: expiresInSeconds,
+      issuer: JWT_ISSUER,
+      audience: JWT_AUDIENCE,
+    }
   );
 };
 
